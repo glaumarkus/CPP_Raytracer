@@ -76,7 +76,15 @@ int main()
 
     Image img(width, height);
 
-    Raytrace(img, &s, &c);
+    //Raytrace(img, &s, &c);
+
+    Ray r(Point(0.0, 0.0, 0.0), Vector3(1., 0., 0.));
+    Sphere test(Point(2.0, 0.0, 0.0), 1, MatGray);
+    Intersection i(r);
+
+    if (test.intersect(i))
+        std::cout << "Yes" << std::endl;
+
     
     return 0;
 }
