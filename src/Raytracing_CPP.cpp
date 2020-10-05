@@ -58,10 +58,11 @@ int main()
 
     // loading scene from file 
     Scene s;
-    if (s.fromFile("params.txt")){
+    if (s.fromFile("params.txt")) {
         std::cout << "Scene successfully loaded!" << std::endl;
     }
-    
+    std::cout << s.S.shapes.size() << "after loading" <<std::endl;
+
     Camera c(
         Point(-200.f, 0.0f, 70.f),
         Vector3(1.0f, 0.0f, 0.0f),
@@ -75,15 +76,31 @@ int main()
     //Raytrace(img, &s, &c);
 
     Ray r(Point(0.0, 0.0, 0.0), Vector3(1., 0., 0.));
-    Sphere test(Point(2.0, 0.0, 0.0), 1, MatGray);
     Intersection i(r);
 
-    if (test.intersect(i))
-        std::cout << "Yes" << std::endl;
-    
-    if (im.saveImage("test1.png"))
-		std::cout << "success";
+    //std::list<Shape*>::iterator it = s.S.shapes.begin();
+    //std::cout << s.S.shapes.size() << "after it" << std::endl;
 
+    //*it = Sphere(Point(2.0, 0.0, 0.0), 1, MatGray);
+
+
+    //Shape test = *it;
+
+    //std::cout << it << std::endl;
+    //s.S.addShape(Sphere());
     
-    return 0;
+
+    if (s.S.intersect(i))
+        std::cout << "Yes1" << std::endl;
+
+    //Sphere(Point(2.0, 0.0, 0.0), 1, MatGray);
+    if (Sphere(Point(2.0, 0.0, 0.0), 1, MatGray).intersect(i))
+        std::cout << "Yes2" << std::endl;
+
+    if (img.saveImage("test1.png"))
+        return 0;
+        std::cout << "success";
+
+
+    return 1;
 }
