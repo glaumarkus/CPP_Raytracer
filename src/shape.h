@@ -10,14 +10,14 @@
 
 struct Shape {
 	virtual ~Shape();
-	virtual bool intersect(Intersection& i);
+	virtual bool intersect(Intersection& i) = 0;
 };
 
 struct ShapeSet : public Shape {
-	std::list<Shape> shapes;
+	std::list<Shape*> shapes;
 	ShapeSet();
 	virtual ~ShapeSet();
-	void addShape(Shape shape);
+	void addShape(Shape* shape);
 	virtual bool intersect(Intersection& i);
 
 };
