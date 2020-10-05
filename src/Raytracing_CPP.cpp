@@ -32,19 +32,21 @@ void Raytrace(Image& image, Scene* scene, Camera* c) {
     int width = image.getWidth();
     int height = image.getHeight();
 
-    for (int x = 0; x < width; x++) {
-        for (int y = 0; y < height; y++) {
+    //std::cout << width << " " << height << std::endl;
+
+    for (int x = 0; x < width; ++x) {
+        for (int y = 0; y < height; ++y) {
 
             float X = 2.0f * x / width - 1;
             float Y = -2.0f * y / height + 1;
 
             Ray r = c->getRay(X, Y);
-            //r.print();
             Intersection i(r);
 
             if (scene->S.intersect(i)) {
-                image.changePixel(i.color, x, y);
+                image.changePixel(i.color, y, x);
             }
+
         }
     }
 }
@@ -52,8 +54,8 @@ void Raytrace(Image& image, Scene* scene, Camera* c) {
 int main()
 {
 
-    int height = 60;
-    int width = 80;
+    int height = 1080;
+    int width = 1960;
 
 
     // loading scene from file 
@@ -61,10 +63,9 @@ int main()
     if (s.fromFile("params.txt")) {
         std::cout << "Scene successfully loaded!" << std::endl;
     }
-    std::cout << s.S.shapes.size() << "after loading" <<std::endl;
 
     Camera c(
-        Point(-200.f, 0.0f, 70.f),
+        Point(-200.f, 0.0f, 0.f),
         Vector3(1.0f, 0.0f, 0.0f),
         Vector3(0.0f, 0.0f, 1.0f),
         15.0f * PI / 180.0f,
@@ -73,34 +74,13 @@ int main()
 
     Image img(width, height);
 
-    //Raytrace(img, &s, &c);
-
-    Ray r(Point(0.0, 0.0, 0.0), Vector3(1., 0., 0.));
-    Intersection i(r);
-
-    //std::list<Shape*>::iterator it = s.S.shapes.begin();
-    //std::cout << s.S.shapes.size() << "after it" << std::endl;
-
-    //*it = Sphere(Point(2.0, 0.0, 0.0), 1, MatGray);
+    Raytrace(img, &s, &c);
 
 
-    //Shape test = *it;
-
-    //std::cout << it << std::endl;
-    //s.S.addShape(Sphere());
+    
+    if (img.saveImage("test1.png"))
+        std::cout << "success";
     
 
-    if (s.S.intersect(i))
-        std::cout << "Yes1" << std::endl;
-
-    //Sphere(Point(2.0, 0.0, 0.0), 1, MatGray);
-    if (Sphere(Point(2.0, 0.0, 0.0), 1, MatGray).intersect(i))
-        std::cout << "Yes2" << std::endl;
-
-    if (img.saveImage("test1.png"))
-        return 0;
-        std::cout << "success";
-
-
-    return 1;
+    return 0;
 }
