@@ -1,8 +1,11 @@
 #include "shape.h"
 
+/*
 bool Shape::intersect(Intersection& i) {
+	std::cout << "shouldnt be here";
 	return false;
 }
+*/
 
 Shape::~Shape(){}
 
@@ -12,18 +15,21 @@ ShapeSet::ShapeSet()
 ShapeSet::~ShapeSet()
 {}
 
-void ShapeSet::addShape(Shape shape) {
+void ShapeSet::addShape(Shape* shape) {
 	shapes.emplace_back(shape);
 }
 
 bool ShapeSet::intersect(Intersection& i) {
 
 	bool doesIntersect = false;
-	std::list<Shape>::iterator it;
+	std::list<Shape*>::iterator it;
+	std::cout << shapes.size() << std::endl;
 	for (it = shapes.begin(); it != shapes.end(); it++) {
 
-		Shape curShape = *it;
-		if (curShape.intersect(i)) {
+		std::cout << "Checking Shape" << std::endl;
+
+		Shape *curShape = *it;
+		if (curShape->intersect(i)) {
 			doesIntersect = true;
 		}
 	}
