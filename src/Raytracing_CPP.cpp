@@ -40,14 +40,10 @@ void Raytrace(Image& image, Scene* scene, Camera* c) {
 
             Ray r = c->getRay(X, Y);
             //r.print();
-
             Intersection i(r);
 
-            Color pixel = black;
-
             if (scene->S.intersect(i)) {
-                std::cout << "Intersection" << std::endl;
-                pixel = i.color;
+                image.changePixel(i.color, x, y);
             }
         }
     }
@@ -84,6 +80,9 @@ int main()
 
     if (test.intersect(i))
         std::cout << "Yes" << std::endl;
+    
+    if (im.saveImage("test1.png"))
+		std::cout << "success";
 
     
     return 0;
