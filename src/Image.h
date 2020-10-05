@@ -1,14 +1,18 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include <fstream>
-#include "Color.h"
 #include <string>
-#include <vector>
+#include <algorithm>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc.hpp>
+
+#include "Color.h"
+
 
 struct Image {
-	int width, height;
-	std::vector<Color> imageData;
+	const int width, height;
+	cv::Mat image;
 
 	Image(int width, int height);
 	virtual ~Image();
@@ -16,7 +20,9 @@ struct Image {
 	int getWidth();
 	int getHeight();
 
-	void saveImage();
+	void changePixel(const Color& c, const int x, const int y);
+
+	bool saveImage(const std::string& filename);
 
 };
 
