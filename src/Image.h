@@ -3,12 +3,12 @@
 
 #include <string>
 #include <algorithm>
+#include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
 #include "Color.h"
-
 
 struct Image {
 	const int width, height;
