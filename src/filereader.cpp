@@ -1,7 +1,6 @@
 #include "filereader.h"
-//#include "shapes.h"
 
-// noch einfügen , ShapeSet& s, LightSet& l
+// noch einfÃ¼gen , ShapeSet& s, LightSet& l
 bool Scene::fromFile(const std::string& path){
 
 	std::ifstream file_(path);
@@ -28,8 +27,12 @@ bool Scene::fromFile(const std::string& path){
 
 			Color temp(r, g, b);
 			Material tempMat(temp, ambient, diffuse, specular, shinyness, refraction);
-			Sphere s(Point(px, py, pz), radius, tempMat);
+			//Sphere s(Point(px, py, pz), radius, tempMat);
+			Sphere* s = new Sphere(Point(px, py, pz), radius, tempMat);
+			//S.addShape(Sphere(Point(px, py, pz), radius, tempMat));
+			std::cout << &s << std::endl;
 			S.addShape(s);
+			std::cout << S.shapes.size() << std::endl;
 
 			std::cout << "Sphere added" << std::endl;
 		}
@@ -41,8 +44,8 @@ bool Scene::fromFile(const std::string& path){
 			Color temp(r, g, b);
 			Material tempMat(temp, ambient, diffuse, specular, shinyness, refraction);
 
-			Plane p(Point(px, py, pz), Vector3(nx, ny, nz), tempMat);
-			S.addShape(p);
+			//Plane p(Point(px, py, pz), Vector3(nx, ny, nz), tempMat);
+			//S.addShape(p);
 
 			std::cout << "Plane added" << std::endl;
 
