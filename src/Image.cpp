@@ -4,7 +4,7 @@ Image::Image(int width, int height) :
 	width(width),
 	height(height)
 {
-	image = cv::Mat::zeros(height, width, CV_32FC3);
+	image = cv::Mat::zeros(height, width, CV_8UC3);
 }
 
 int Image::getHeight() {
@@ -20,10 +20,10 @@ inline float clamp_quick(const float& f) {
 }
 
 void Image::changePixel(const Color& c, const int x, const int y) {
-	float red = clamp_quick(c.r * 255);
-	float blue = clamp_quick(c.b * 255);
-	float green = clamp_quick(c.g * 255);
-	image.at<cv::Vec3f>(x, y) = cv::Vec3f(blue, green, red);
+	uchar red = (int)clamp_quick(c.r * 255);
+	uchar blue = (int)clamp_quick(c.b * 255);
+	uchar green = (int)clamp_quick(c.g * 255);
+	image.at<cv::Vec3b>(x, y) = cv::Vec3b(blue, green, red);
 }
 
 
