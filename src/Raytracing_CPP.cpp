@@ -9,6 +9,10 @@
 #include "Camera.h"
 #include "Image.h"
 
+#include <vector>
+#include <windows.h>
+#include <tchar.h>
+
 // Color Blueprints
 static Color white(1.0f, 1.0f, 1.0f);
 static Color black(0.0f, 0.0f, 0.0f);
@@ -51,12 +55,61 @@ void Raytrace(Image& image, Scene* scene, Camera* c) {
     }
 }
 
+void read_directory(const std::string& folder, std::vector<std::string>& files)
+{
+    //std::vector<std::string> files;
+    WIN32_FIND_DATA data;
+    HANDLE hFind;
+
+    std::string buffer;
+
+    std::string prefix = folder;
+    prefix.append("\\");
+    std::string pattern = prefix;
+    pattern.append("*.txt");
+
+    std::wstring patternw(pattern.begin(), pattern.end());
+    const wchar_t* c = patternw.c_str();
+
+    if ((hFind = FindFirstFile(c, &data)) != INVALID_HANDLE_VALUE) {
+
+        std::wstring first = data.cFileName;
+        std::string str1(first.begin(), first.end());
+        buffer.append(prefix);
+        buffer.append(str1);
+        files.emplace_back(buffer);
+        buffer.clear();
+
+        while (FindNextFile(hFind, &data) != 0) {
+
+            std::wstring temp = data.cFileName;
+            std::string str(temp.begin(), temp.end());
+            buffer.append(prefix);
+            buffer.append(str);
+            files.emplace_back(buffer);
+            buffer.clear();
+        }
+        FindClose(hFind);
+    }
+}
+
 int main()
 {
 
     int height = 1080;
     int width = 1960;
+    
+    std::vector<std::string> files;
+    read_directory("Scene", files);
 
+    for (const auto& file : files) {
+        Scene s;
+
+        if (s.fromFile(file)) {
+            std::cout << "Reading Scene: "<< file << std::endl;
+        }
+
+    }
 
     // loading scene from file 
     Scene s;
