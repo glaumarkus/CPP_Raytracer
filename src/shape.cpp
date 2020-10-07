@@ -201,6 +201,8 @@ Color Plane::getColor(const Intersection& i, Shape* s, LightSet* l) {
 		Ray reflectRay(pt, reflectVec);
 		Intersection reflectI(reflectRay);
 		if (s->intersect(reflectI)) {
+			
+			reflectColor = i.pShape->getColor(reflectI, s, l);
 
 			//reflectColor
 
