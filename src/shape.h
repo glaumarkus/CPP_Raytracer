@@ -21,6 +21,8 @@ struct Light {
 
 	Light(const Point& position, const Color& color, const float intensity);
 	virtual ~Light();
+
+	void intersect(Intersection& i);
 };
 
 struct LightSet {
@@ -33,7 +35,9 @@ struct LightSet {
 struct Shape {
 	virtual ~Shape();
 	virtual bool intersect(Intersection& i) = 0;
-	virtual Color getColor(const Intersection& i,  Shape* s, LightSet* l) = 0;
+	virtual Color getColor(const Intersection& i, Shape* s, LightSet* l) = 0;
+
+	virtual bool isPlane() = 0;
 
 };
 
@@ -44,6 +48,7 @@ struct ShapeSet : public Shape {
 	void addShape(Shape* shape);
 	virtual bool intersect(Intersection& i);
 	virtual Color getColor(const Intersection& i, Shape* s, LightSet* l);
+	virtual bool isPlane();
 
 };
 
@@ -57,7 +62,8 @@ struct Plane : public Shape {
 
 	virtual bool intersect(Intersection& i);
 	virtual Color getColor(const Intersection& i, Shape* s, LightSet* l);
-
+	bool isShade(Intersection& i, Shape* s, Light* l, const float ref_t);
+	virtual bool isPlane();
 
 };
 
@@ -72,7 +78,9 @@ struct Checkboard : public Shape {
 
 	virtual bool intersect(Intersection& i);
 	virtual Color getColor(const Intersection& i, Shape* s, LightSet* l);
+	//bool isShade(Intersection& i, Shape* s, Light* l);
 	Color getBaseColor(const Point& p);
+	virtual bool isPlane();
 };
 
 struct Sphere : public Shape {
@@ -85,8 +93,9 @@ struct Sphere : public Shape {
 
 	virtual bool intersect(Intersection& i);
 	virtual Color getColor(const Intersection& i, Shape* s, LightSet* l);
-	bool isShade(Intersection& i,Shape* s, Light* l);
+	bool isShade(Intersection& i, Shape* s, Light* l, const float ref_t);
 	Vector3 getNormalFromPt(const Point& p);
+	virtual bool isPlane();
 };
 
 
