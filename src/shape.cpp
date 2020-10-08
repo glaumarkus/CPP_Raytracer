@@ -59,10 +59,18 @@ bool Sphere::isShade(Intersection& i, Shape* s, Light* l, const float ref_t) {
 
 	bool isShade = false;
 	if (s->intersect(i)) {
+
+		//std::cout << i.pShape << std::endl;
+		//std::cout << this << std::endl;
+		//std::cout << std::endl;
+
 		if (i.t < ref_t) {
 			isShade = true;
 		}
 	}
+
+	//std::cout << "ref t: " << ref_t << "actual t" << i.t << std::endl;
+
 	return isShade;
 }
 
@@ -70,7 +78,7 @@ bool Plane::isShade(Intersection& i, Shape* s, Light* l, const float ref_t) {
 
 	bool isShade = false;
 	if (s->intersect(i)) {
-		if ( i.t < ref_t ) {
+		if (i.t < ref_t) {
 			isShade = true;
 		}
 	}
@@ -85,6 +93,7 @@ Color Sphere::getColor(const Intersection& i, Shape* s, LightSet* l) {
 	std::list<Light*>::iterator it;
 
 	const int numLights = l->lights.size();
+	Vector3 normal = getNormalFromPt(pt);
 
 	for (it = l->lights.begin(); it != l->lights.end(); ++it) {
 
@@ -98,7 +107,7 @@ Color Sphere::getColor(const Intersection& i, Shape* s, LightSet* l) {
 		Color diffuseColor = Color();
 		Color specularColor = Color();
 
-		Vector3 normal = getNormalFromPt(pt);
+		
 		float lDotN = dot(lightVector, normal);
 
 		Ray lightRay(pt, lightVector);
@@ -122,23 +131,37 @@ Color Sphere::getColor(const Intersection& i, Shape* s, LightSet* l) {
 				}
 			}
 		}
+
 		finColor += (ambientColor + diffuseColor + specularColor) * mat.color;
 	}
 	finColor = finColor * (1.f / numLights);
+
+	Color reflectColor = Color();
+
+	if (mat.refraction > 0.1) {
+		Vector3 reflectVec = reflect(pov, normal);
+		Ray reflectRay(pt, reflectVec);
+		Intersection reflectI(reflectRay);
+		if (s->intersect(reflectI)) {
+			reflectColor = i.pShape->getColor(reflectI, s, l);
+
+		}
+		finColor = finColor * (1.f - mat.refraction) + reflectColor * mat.refraction;
+
+	}
+
 	return finColor;
 }
 
 
 Color Plane::getColor(const Intersection& i, Shape* s, LightSet* l) {
 
-
-
 	Color finColor;
 	const Point pt = i.ray.calculate(i.t);
 	const Vector3 pov = i.ray.direction;
 
 	Color reflectColor = Color();
-	Color ambientFinal= Color();
+	Color ambientFinal = Color();
 	Color diffuseFinal = Color();
 	Color specularFinal = Color();
 
@@ -182,44 +205,37 @@ Color Plane::getColor(const Intersection& i, Shape* s, LightSet* l) {
 			}
 		}
 
-		//ambientFinal += ambientColor;
-		//diffuseFinal += diffuseColor;
-		//specularFinal += specularColor;
+		ambientFinal += ambientColor;
+		diffuseFinal += diffuseColor;
+		specularFinal += specularColor;
 
 		finColor += (ambientColor + diffuseColor + specularColor) * mat.color;
 	}
 
-	//ambientFinal = ambientFinal * (1.f / numLights);
-	//diffuseFinal = diffuseFinal * (1.f / numLights);
-	//specularFinal = specularFinal * (1.f / numLights);
+	ambientFinal = ambientFinal * (1.f / numLights);
+	diffuseFinal = diffuseFinal * (1.f / numLights);
+	specularFinal = specularFinal * (1.f / numLights);
 
 	finColor = finColor * (1.f / numLights);
-	
+
 
 	if (mat.refraction > 0.1) {
 		Vector3 reflectVec = reflect(pov, normal);
 		Ray reflectRay(pt, reflectVec);
 		Intersection reflectI(reflectRay);
 		if (s->intersect(reflectI)) {
-			
+			//std::cout << "Reflection print: " << std::endl;
+			//std::cout << this << std::endl;
 			reflectColor = i.pShape->getColor(reflectI, s, l);
-
-			//reflectColor
-
-			/*
-			if (&i.pShape == &this) {
-				reflectColor = i.pShape->getColor(i, s, l);
-			}
-			*/
-			
+		
 		}
 		finColor = finColor * (1.f - mat.refraction) + reflectColor * mat.refraction;
+
 	}
 
-	
+
 	return finColor;
 }
-
 
 
 Color Checkboard::getColor(const Intersection& i, Shape* s, LightSet* l) {
