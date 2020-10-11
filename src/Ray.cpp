@@ -3,12 +3,12 @@
 #include <iostream>
 
 // Ray
-Ray::Ray () :
+Ray::Ray() :
 	origin(Vector3()),
 	direction(Vector3())
 {}
-	
-Ray::Ray (const Ray& r) : 
+
+Ray::Ray(const Ray& r) :
 	origin(r.origin),
 	direction(r.direction)
 {}
@@ -18,11 +18,11 @@ Ray::Ray(const Point& origin, const Vector3& direction) :
 	direction(direction)
 {}
 
-Point Ray::calculate(float t) {
+Point Ray::calculate(float t) const {
 	return origin + direction * t;
 }
 
-Ray& Ray::operator =(const Ray& r){
+Ray& Ray::operator =(const Ray& r) {
 	origin = r.origin;
 	direction = r.direction;
 	return *this;
@@ -39,19 +39,19 @@ Ray::~Ray()
 {}
 
 // intersection
-Intersection::Intersection() : 
+Intersection::Intersection() :
 	ray(Ray()),
 	t(RAY_T_MAX),
 	pShape(NULL)
 {}
 
-Intersection::Intersection(const Intersection& i) : 
+Intersection::Intersection(const Intersection& i) :
 	ray(i.ray),
 	t(i.t),
 	pShape(i.pShape)
 {}
 
-Intersection::Intersection(const Ray& ray) : 
+Intersection::Intersection(const Ray& ray) :
 	ray(ray),
 	t(RAY_T_MAX),
 	pShape(NULL)
@@ -59,4 +59,3 @@ Intersection::Intersection(const Ray& ray) :
 
 Intersection::~Intersection()
 {}
-

@@ -11,6 +11,8 @@ struct Material {
     float shinyness;
     float refraction;
 
+    Material();
+
     Material(
         Color c,
         float ambient,

@@ -12,6 +12,7 @@
 #include <vector>
 #include <windows.h>
 #include <tchar.h>
+#include <algorithm>
 
 // Color Blueprints
 static Color white(1.0f, 1.0f, 1.0f);
@@ -24,19 +25,13 @@ static Color light_green(0.862f, 0.929f, 0.756f);
 static Color light_pink(0.99f, 0.756f, 0.666f);
 static Color orange(0.901f, 0.568f, 0.137f);
 
-// material blueprints
-static Material MatGray(gray, 0.7f, 0.9f, 0.9f, 80.0f, 0.8f);
-static Material MatBlue(blue, 0.7f, 0.9f, 0.9f, 80.0f, 0.8f);
-static Material MatRed(white, 0.7f, 0.9f, 0.9f, 80.0f, 0.8f);
-static Material MatOrange(orange, 0.7f, 0.9f, 0.9f, 80.0f, 0.0f);
-static Material MatGreen(green, 0.7f, 0.9f, 0.9f, 80.0f, 0.0f);
 
 void Raytrace(Image& image, Scene* scene, Camera* c) {
 
     int width = image.getWidth();
     int height = image.getHeight();
 
-    //std::cout << width << " " << height << std::endl;
+    std::cout << "Timer: " << std::endl;
 
     for (int x = 0; x < width; ++x) {
         for (int y = 0; y < height; ++y) {
@@ -48,11 +43,19 @@ void Raytrace(Image& image, Scene* scene, Camera* c) {
             Intersection i(r);
 
             if (scene->S.intersect(i)) {
-                image.changePixel(i.color, y, x);
+
+                Color localColor = i.pShape->getColor(i, &scene->S, &scene->L, 3);
+                // apply interpolation
+                image.changePixel(localColor, y, x);
             }
 
         }
+
+        if (x % (int)(width / 20) == 0)
+            std::cout << "#";
     }
+
+    std::cout << std::endl;
 }
 
 void read_directory(const std::string& folder, std::vector<std::string>& files)
@@ -96,43 +99,48 @@ void read_directory(const std::string& folder, std::vector<std::string>& files)
 int main()
 {
 
-    int height = 1080;
-    int width = 1960;
-    
+    int height = 600;
+    int width = 800;
+
     std::vector<std::string> files;
     read_directory("Scene", files);
 
-    for (const auto& file : files) {
-        Scene s;
+    int counter = 10000;
 
+    for (const auto& file : files) {
+
+        Scene s;
         if (s.fromFile(file)) {
-            std::cout << "Reading Scene: "<< file << std::endl;
+            std::cout << "Reading Scene: " << file << std::endl;
         }
 
+        Camera c(
+            Point(-200.f, 0.0f, 0.f),
+            Vector3(1.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 0.0f, 1.0f),
+            30.0f * PI / 180.0f,
+            (float)width / (float)height
+        );
+
+        Image img(width, height);
+
+        Raytrace(img, &s, &c);
+
+        std::string exportf = "imgs\\";
+        exportf.append(std::to_string(counter));
+
+        exportf.append(".png");
+
+        if (img.saveImage(exportf))
+            std::cout << exportf << " saved!" << std::endl;
+
+        counter++;
+
+        break;
+
+
     }
 
-    // loading scene from file 
-    Scene s;
-    if (s.fromFile("params.txt")) {
-        std::cout << "Scene successfully loaded!" << std::endl;
-    }
-
-    Camera c(
-        Point(-200.f, 0.0f, 0.f),
-        Vector3(1.0f, 0.0f, 0.0f),
-        Vector3(0.0f, 0.0f, 1.0f),
-        15.0f * PI / 180.0f,
-        (float)width / (float)height
-    );
-
-    Image img(width, height);
-
-    Raytrace(img, &s, &c);
-
-
-    
-    if (img.saveImage("test1.png"))
-        std::cout << "success";
     
 
     return 0;

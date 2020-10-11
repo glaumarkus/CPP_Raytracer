@@ -9,6 +9,10 @@
 
 inline float squared(float n);
 
+/*
+2D Vector
+*/
+
 struct Vector2 {
 	float u, v;
 
@@ -20,6 +24,10 @@ struct Vector2 {
 
 	void print();
 };
+
+/*
+3D Vector
+*/
 
 struct Vector3 {
 	float x, y, z;

@@ -9,6 +9,7 @@
 #include <opencv2/imgproc.hpp>
 
 #include "Color.h"
+#include "Vector.h"
 
 struct Image {
 	const int width, height;
@@ -21,8 +22,18 @@ struct Image {
 	int getHeight();
 
 	void changePixel(const Color& c, const int x, const int y);
-
 	bool saveImage(const std::string& filename);
+
+};
+
+struct Texture {
+	cv::Mat texture;
+	int width, height;
+
+	//Texture();
+	void readTexture(const std::string& filename);
+	void getColor(Color& c, const float& u, const float& v);
+	virtual ~Texture();
 
 };
 

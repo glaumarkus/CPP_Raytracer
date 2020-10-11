@@ -26,6 +26,29 @@ Vector3 reflect(const Vector3& v1, const Vector3& v2)
 	return Vector3(v1 - v2 * 2.0f * f);
 }
 
+// Vector2
+Vector2::Vector2() :
+	u(0.0f),
+	v(0.0f)
+{}
+
+Vector2::Vector2(float u, float v) :
+	u(u),
+	v(v)
+{}
+
+Vector2::Vector2(const Vector2& v2) :
+	u(v2.u),
+	v(v2.v)
+{}
+
+void Vector2::print() {
+	std::cout << "2D Vector with u: " << u << " v: " << v << std::endl;
+}
+
+Vector2::~Vector2()
+{}
+
 // Vector3
 Vector3::Vector3() :
 	x(1.0f),
@@ -121,28 +144,4 @@ Vector3& Vector3::operator /=(float f)
 }
 
 Vector3::~Vector3()
-{}
-
-
-// Vector2
-Vector2::Vector2() :
-	u(0.0f),
-	v(0.0f)
-{}
-
-Vector2::Vector2(float u, float v):
-	u(u),
-	v(v)
-{}
-
-Vector2::Vector2(const Vector2& v2) :
-	u(v2.u),
-	v(v2.v)
-{}
-
-void Vector2::print() {
-	std::cout << "2D Vector with u: " << u << " v: " << v << std::endl;
-}
-
-Vector2::~Vector2()
 {}
